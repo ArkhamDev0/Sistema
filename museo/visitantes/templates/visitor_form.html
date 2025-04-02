@@ -1,0 +1,399 @@
+{% extends 'dj/base.html' %}
+
+{% block title %}Añadir Visitante{% endblock %}
+
+{% block header_title %}{% if form.instance.pk %}Editar Visitante{% else %}Añadir Visitante{% endif %}{% endblock %}
+
+{% block content %}
+{% now "Y-m-d" as current_date %}
+
+<div class="container mt-4">
+    <div id="alert-container" class="mt-3">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="form-container p-4 border rounded shadow-sm bg-light">
+        <form method="POST" id="visitaForm">
+            {% csrf_token %}
+            {% if form.instance.pk %}
+                <input type="hidden" id="visitante_id" name="visitante_id" value="{{ form.instance.pk }}">
+            {% endif %}
+
+            <h2 class="mb-4 text-center">{% if form.instance.pk %}Editar Visitante{% else %}Añadir Visitante{% endif %}</h2>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Tipo de Documento</label>
+                <div>
+                    <input type="radio" id="venezolano" name="tipo_documento" value="V" 
+                           {% if form.tipo_documento.value == 'V' %}checked{% endif %}>
+                    <label for="venezolano">Cédula Venezolana</label>
+
+                    <input type="radio" id="extranjero" name="tipo_documento" value="E" 
+                           {% if form.tipo_documento.value == 'E' %}checked{% endif %}>
+                    <label for="extranjero">Cédula Extranjera</label>
+
+                    <input type="radio" id="pasaporte" name="tipo_documento" value="P" 
+                           {% if form.tipo_documento.value == 'P' %}checked{% endif %}>
+                    <label for="pasaporte">Pasaporte</label>
+                </div>
+            </div>
+
+            <div class="mb-3" id="field_documento">
+                <label for="id_documento" class="form-label fw-bold">Documento</label>
+                <div class="input-group">
+                    <input type="text" name="documento" id="id_documento"
+                           class="form-control {% if form.documento.errors %}is-invalid{% endif %}"
+                           required
+                           value="{{ form.documento.value|default:''|cut:'V-'|cut:'E-'|cut:'P-' }}"
+                           placeholder="Ingrese solo números (para cédula) o letras/números (para pasaporte)">
+                    <button type="button" class="btn btn-primary" id="btnBuscar">
+                        <i class="bi bi-search"></i> Buscar
+                    </button>
+                </div>
+                {% if form.documento.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.documento.errors.0 }}
+                    </div>
+                {% endif %}
+                <div class="text-danger" id="documento_error"></div>
+            </div>
+
+            <div class="mb-3" id="field_nombre">
+                <label for="id_nombre" class="form-label fw-bold">Nombre</label>
+                <input type="text" name="nombre" id="id_nombre"
+                       class="form-control {% if form.nombre.errors %}is-invalid{% endif %}"
+                       required value="{{ form.nombre.value|default:'' }}">
+                {% if form.nombre.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.nombre.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3" id="field_apellido">
+                <label for="id_apellido" class="form-label fw-bold">Apellido</label>
+                <input type="text" name="apellido" id="id_apellido"
+                       class="form-control {% if form.apellido.errors %}is-invalid{% endif %}"
+                       required value="{{ form.apellido.value|default:'' }}">
+                {% if form.apellido.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.apellido.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3" id="field_pais" style="display: none;">
+                <label for="id_pais" class="form-label fw-bold">País</label>
+                <input type="text" name="pais" id="id_pais"
+                       class="form-control {% if form.pais.errors %}is-invalid{% endif %}"
+                       value="{{ form.pais.value|default:'' }}">
+                {% if form.pais.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.pais.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3" id="field_fecha_visita">
+                <label for="id_fecha_visita" class="form-label fw-bold">Fecha de Visita</label>
+                <input type="date" name="fecha_visita" id="id_fecha_visita"
+                       class="form-control {% if form.fecha_visita.errors %}is-invalid{% endif %}"
+                       required
+                       value="{{ form.fecha_visita.value|default:current_date }}">
+                {% if form.fecha_visita.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.fecha_visita.errors.0 }}
+                    </div>
+                {% endif %}
+                <div class="form-check mt-2">
+                    <input class="form-check-input" type="checkbox" id="visita_hoy" name="visita_hoy" 
+                           {% if form.visita_hoy.value or not form.fecha_visita.value %}checked{% endif %}>
+                    <label class="form-check-label" for="visita_hoy">Visita para hoy</label>
+                </div>
+            </div>
+
+            <div class="mb-3" id="field_telefono">
+                <label for="id_telefono" class="form-label fw-bold">Teléfono</label>
+                <input type="text" name="telefono" id="id_telefono"
+                       class="form-control {% if form.telefono.errors %}is-invalid{% endif %}"
+                       value="{{ form.telefono.value|default:'' }}">
+                {% if form.telefono.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.telefono.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3" id="field_correo">
+                <label for="id_correo" class="form-label fw-bold">Correo Electrónico</label>
+                <input type="email" name="correo" id="id_correo"
+                       class="form-control {% if form.correo.errors %}is-invalid{% endif %}"
+                       value="{{ form.correo.value|default:'' }}">
+                {% if form.correo.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.correo.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3" id="field_edad">
+                <label for="id_edad" class="form-label fw-bold">Edad</label>
+                <input type="number" name="edad" id="id_edad"
+                       class="form-control {% if form.edad.errors %}is-invalid{% endif %}"
+                       required min="1"
+                       value="{{ form.edad.value|default:'' }}">
+                {% if form.edad.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.edad.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3" id="field_sexo">
+                <label class="form-label fw-bold">Sexo</label>
+                <select name="sexo" id="id_sexo" class="form-select {% if form.sexo.errors %}is-invalid{% endif %}" required>
+                    <option value="1" {% if form.sexo.value == 1 %}selected{% endif %}>Masculino</option>
+                    <option value="2" {% if form.sexo.value == 2 %}selected{% endif %}>Femenino</option>
+                    <option value="3" {% if form.sexo.value == 3 %}selected{% endif %}>Otro</option>
+                    <option value="4" {% if form.sexo.value == 4 %}selected{% endif %}>Prefiero no decirlo</option>
+                </select>
+                {% if form.sexo.errors %}
+                    <div class="invalid-feedback">
+                        {{ form.sexo.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-3 form-check">
+                <input type="checkbox" name="empresa" id="id_empresa" class="form-check-input"
+                       {% if form.empresa.value %}checked{% endif %}>
+                <label for="id_empresa" class="form-check-label fw-bold">¿Es empresa?</label>
+            </div>
+
+            <div id="empresa_fields" style="display: none;">
+                <div class="mb-3" id="field_nombre_empresa">
+                    <label for="id_nombre_empresa" class="form-label fw-bold">Nombre de la Empresa</label>
+                    <input type="text" name="nombre_empresa" id="id_nombre_empresa" class="form-control {% if form.nombre_empresa.errors %}is-invalid{% endif %}" 
+                           value="{{ form.nombre_empresa.value|default:'' }}">
+                    {% if form.nombre_empresa.errors %}
+                        <div class="invalid-feedback">
+                            {{ form.nombre_empresa.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3" id="field_rif_empresa">
+                    <label for="id_rif_empresa" class="form-label fw-bold">RIF de la Empresa</label>
+                    <input type="text" name="rif_empresa" id="id_rif_empresa" class="form-control {% if form.rif_empresa.errors %}is-invalid{% endif %}" 
+                           value="{{ form.rif_empresa.value|default:'' }}">
+                    {% if form.rif_empresa.errors %}
+                        <div class="invalid-feedback">
+                            {{ form.rif_empresa.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save"></i> Guardar
+                </button>
+                <a href="{% url 'crear_visita' %}" class="btn btn-success">
+                    <i class="bi bi-person-fill-add"></i> Agregar Visita
+                </a>
+                <a href="{% url 'agregar_cita' %}" class="btn btn-info">
+                    <i class="bi bi-calendar-plus-fill"></i> Agendar Cita
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Elementos del DOM
+        const elementos = {
+            form: document.getElementById('visitaForm'),
+            tipoDocumentoVenezolano: document.getElementById('venezolano'),
+            tipoDocumentoExtranjero: document.getElementById('extranjero'),
+            tipoDocumentoPasaporte: document.getElementById('pasaporte'),
+            documentoInput: document.getElementById('id_documento'),
+            paisField: document.getElementById('field_pais'),
+            empresaCheckbox: document.getElementById('id_empresa'),
+            empresaFields: document.getElementById('empresa_fields'),
+            btnBuscar: document.getElementById('btnBuscar'),
+            fechaVisita: document.getElementById('id_fecha_visita'),
+            visitaHoyCheckbox: document.getElementById('visita_hoy'),
+            nombreInput: document.getElementById('id_nombre'),
+            apellidoInput: document.getElementById('id_apellido'),
+            telefonoInput: document.getElementById('id_telefono'),
+            correoInput: document.getElementById('id_correo'),
+            edadInput: document.getElementById('id_edad'),
+            sexoSelect: document.getElementById('id_sexo'),
+            paisInput: document.getElementById('id_pais'),
+            nombreEmpresaInput: document.getElementById('id_nombre_empresa'),
+            rifEmpresaInput: document.getElementById('id_rif_empresa')
+        };
+    
+        // Mostrar alertas
+        const mostrarAlerta = (mensaje, tipo) => {
+            const alertContainer = document.getElementById('alert-container');
+            alertContainer.innerHTML = '';
+            const alerta = document.createElement('div');
+            alerta.className = `alert alert-${tipo} alert-dismissible fade show`;
+            alerta.role = 'alert';
+            alerta.innerHTML = `${mensaje} <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+            alertContainer.appendChild(alerta);
+        };
+    
+        // Mostrar/ocultar campos de empresa
+        const toggleEmpresaFields = () => {
+            elementos.empresaFields.style.display = elementos.empresaCheckbox.checked ? 'block' : 'none';
+        };
+    
+        // Actualizar fecha cuando se marca "visita hoy"
+        const actualizarFechaVisita = () => {
+            const hoy = new Date().toISOString().split('T')[0];
+            if (elementos.visitaHoyCheckbox.checked) {
+                elementos.fechaVisita.value = hoy;
+                elementos.fechaVisita.readOnly = true;
+            } else {
+                elementos.fechaVisita.readOnly = false;
+            }
+        };
+    
+        // Actualizar visibilidad del campo país según tipo de documento
+        const actualizarVisibilidadPais = () => {
+            const tipoDocumento = document.querySelector('input[name="tipo_documento"]:checked').value;
+            elementos.paisField.style.display = (tipoDocumento === 'P' || tipoDocumento === 'E') ? 'block' : 'none';
+        };
+    
+        // Buscar visitante - FUNCIÓN MEJORADA
+        const buscarVisitante = async () => {
+            const tipoDocumento = document.querySelector('input[name="tipo_documento"]:checked').value;
+            let documento = elementos.documentoInput.value.trim();
+    
+            if (!documento) {
+                mostrarAlerta('Por favor ingrese el número de documento', 'danger');
+                return;
+            }
+    
+            try {
+                // Construir parámetros de búsqueda
+                const params = new URLSearchParams({
+                    documento: documento,
+                    tipo_documento: tipoDocumento,
+                });
+    
+                const response = await fetch(`/buscar_visitante/?${params}`);
+    
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status}`);
+                }
+    
+                const data = await response.json();
+    
+                if (data.existe) {
+                    // Autocompletar campos
+                    elementos.nombreInput.value = data.nombre;
+                    elementos.apellidoInput.value = data.apellido;
+                    elementos.edadInput.value = data.edad;
+                    elementos.sexoSelect.value = data.sexo;
+                    elementos.telefonoInput.value = data.telefono;
+                    elementos.correoInput.value = data.correo;
+                    elementos.paisInput.value = data.pais;
+                    elementos.empresaCheckbox.checked = data.empresa;
+                    elementos.nombreEmpresaInput.value = data.nombre_empresa;
+                    elementos.rifEmpresaInput.value = data.rif_empresa;
+    
+                    // Actualizar tipo de documento según lo encontrado
+                    if (data.tipo_documento_real === 'P') {
+                        elementos.tipoDocumentoPasaporte.checked = true;
+                    } else if (data.tipo_documento_real === 'E') {
+                        elementos.tipoDocumentoExtranjero.checked = true;
+                    } else {
+                        elementos.tipoDocumentoVenezolano.checked = true;
+                    }
+    
+                    // Actualizar visibilidad de campos
+                    actualizarVisibilidadPais();
+                    toggleEmpresaFields();
+    
+                    // Mostrar documento completo en el input
+                    elementos.documentoInput.value = data.documento_completo;
+    
+                    mostrarAlerta('Visitante encontrado. Verifique los datos.', 'success');
+                } else {
+                    // Limpiar campos del formulario
+                    elementos.nombreInput.value = '';
+                    elementos.apellidoInput.value = '';
+                    elementos.edadInput.value = '';
+                    elementos.sexoSelect.value = '1'; // Valor predeterminado
+                    elementos.telefonoInput.value = '';
+                    elementos.correoInput.value = '';
+                    elementos.paisInput.value = '';
+                    elementos.empresaCheckbox.checked = false;
+                    elementos.nombreEmpresaInput.value = '';
+                    elementos.rifEmpresaInput.value = '';
+                    elementos.documentoInput.value = ''; // Limpiar el campo documento
+    
+                    mostrarAlerta(data.mensaje || 'Visitante no registrado. Complete los datos.', 'info');
+                }
+            } catch (error) {
+                console.error('Error al buscar visitante:', error);
+                mostrarAlerta('Error al buscar visitante. Por favor intente nuevamente.', 'danger');
+            }
+        };
+    
+        // Event listeners
+        elementos.empresaCheckbox.addEventListener('change', toggleEmpresaFields);
+        elementos.visitaHoyCheckbox.addEventListener('change', actualizarFechaVisita);
+    
+        // Actualizar visibilidad país cuando cambia el tipo de documento
+        elementos.tipoDocumentoVenezolano.addEventListener('change', actualizarVisibilidadPais);
+        elementos.tipoDocumentoExtranjero.addEventListener('change', actualizarVisibilidadPais);
+        elementos.tipoDocumentoPasaporte.addEventListener('change', actualizarVisibilidadPais);
+    
+        elementos.btnBuscar.addEventListener('click', buscarVisitante);
+    
+        // Inicializar
+        toggleEmpresaFields();
+        actualizarFechaVisita();
+        actualizarVisibilidadPais();
+    
+        // Establecer fecha mínima como hoy
+        const hoy = new Date().toISOString().split('T')[0];
+        elementos.fechaVisita.min = hoy;
+
+        // Función para ocultar mensajes después de 5 segundos
+        const ocultarMensajes = () => {
+            const mensajes = document.querySelectorAll('.alert');
+            mensajes.forEach(mensaje => {
+                setTimeout(() => {
+                    mensaje.style.display = 'none';
+                }, 5000); // 5000 milisegundos = 5 segundos
+            });
+        };
+
+        ocultarMensajes(); // Llama a la función al cargar la página
+
+    });
+</script>
+
+<style>
+    .messages .error {
+        color: red;
+        font-weight: bold;
+    }
+
+    .alert-danger {
+        color: red;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}

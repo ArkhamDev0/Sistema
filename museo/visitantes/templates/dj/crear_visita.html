@@ -1,0 +1,57 @@
+{% extends 'dj/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4">Registrar Visita del Día</h3>
+                    <div class="alert alert-info" role="alert">
+                        <strong>Instrucciones:</strong>
+                        <ul>
+                            <li>Seleccione el tipo de documento del visitante (Venezolano, Extranjero o Pasaporte).</li>
+                            <li>Ingrese el número de documento del visitante.</li>
+                            <li>Haga clic en "Registrar Visita" para guardar la visita del día de hoy.</li>
+                        </ul>
+                    </div>
+
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="post" action="{% url 'crear_visita' %}">
+                        {% csrf_token %}
+                        <div class="form-group mb-3">
+                            <label for="tipo_documento" class="form-label">Tipo de Documento</label>
+                            <select class="form-control" id="tipo_documento" name="tipo_documento" required>
+                                <option value="V" selected>Venezolano</option>
+                                <option value="E">Extranjero</option>
+                                <option value="P">Pasaporte</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="documento" class="form-label">Número de Documento</label>
+                            <input type="text" class="form-control" id="documento" name="documento" required>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Registrar Visita
+                            </button>
+                            <a href="{% url 'visitor_list' %}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left-circle"></i> Volver a la Lista de Visitantes
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

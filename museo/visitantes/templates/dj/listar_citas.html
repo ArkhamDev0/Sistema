@@ -1,0 +1,42 @@
+{% extends 'dj/base.html' %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h2>Lista de Citas</h2>
+
+        <form method="get">
+            <div class="form-group">
+                <label for="fecha_filtro">Filtrar por fecha:</label>
+                <input type="date" name="fecha_filtro" id="fecha_filtro" class="form-control" value="{{ fecha_filtro }}">
+            </div>
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </form>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Visitante</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cita in citas %}
+                    <tr>
+                        <td>{{ cita.visitante.nombre }} {{ cita.visitante.apellido }}</td>
+                        <td>{{ cita.fecha }}</td>
+                        <td>{{ cita.hora }}</td>  {# Accede a la hora formateada desde el view #}
+                        <td>
+                            <a href="{% url 'reagendar_cita' cita.pk %}" class="btn btn-warning">Reagendar</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4">No hay citas registradas.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

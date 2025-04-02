@@ -1,0 +1,79 @@
+{% extends 'dj/base.html' %}
+
+{% block title %}Lista de Visitantes{% endblock %}
+
+{% block header_title %}Lista de Visitantes{% endblock %}
+
+{% block content %}
+    <style>
+        /* Estilos mejorados */
+        .visitor-list {
+            width: 80%;
+            margin: 20px auto;
+            font-family: sans-serif;
+        }
+
+        .visitor-item {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .visitor-details {
+            flex-grow: 1;
+        }
+
+        .visitor-details p {
+            margin: 5px 0;
+        }
+
+        .visitor-status {
+            font-weight: bold;
+            padding: 8px 12px;
+            border-radius: 3px;
+        }
+
+        .visitor-status.Pendiente {
+            background-color: #ffc107;
+            color: #212529;
+        }
+
+        .visitor-status.Visitante {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .visitor-status.No_Visitante {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
+
+    <div class="visitor-list">
+        <h2>Visitantes</h2>
+        {% for lista_visitas in visitas_paginadas %}
+            {% for visita in lista_visitas %}
+                <div class="visitor-item">
+                    <div class="visitor-details">
+                        <p><strong>Nombre:</strong> {{ visita.visitante.nombre }} {{ visita.visitante.apellido }}</p>
+                        <p><strong>Documento:</strong> {{ visita.visitante.documento }}</p>
+                    </div>
+                    <span class="visitor-status {{ visita.status }}">{{ visita.status }}</span>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        {% if not visitas_paginadas %}
+            <p>No hay visitantes registrados para hoy.</p>
+        {% endif %}
+
+        {% if not visitas_paginadas and not citas %}
+            <p>No hay visitantes ni citas registradas para hoy.</p>
+        {% endif %}
+    </div>
+{% endblock %}

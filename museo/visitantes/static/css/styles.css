@@ -1,0 +1,105 @@
+/* styles.css */  
+
+* {  
+    box-sizing: border-box;  
+    margin: 0;  
+    padding: 0;  
+}  
+
+body {  
+    font-family: Arial, sans-serif;  
+    background-color: #f4f4f4;  
+}  
+
+/* Layout Principal */  
+.grid-container {  
+    display: grid;  
+    grid-template-rows: 60px auto;  
+    grid-template-columns: 250px auto;  
+}  
+
+/* Estilos para la navegación lateral */  
+.navigation {  
+    background-color: #333;  
+    color: #fff;  
+    padding: 15px;  
+    height: 100vh;  
+}  
+
+.navigation ul {  
+    list-style: none;  
+    padding: 0;  
+}  
+
+.navigation li {  
+    margin: 15px 0;  
+}  
+
+.navigation a {  
+    text-decoration: none;  
+    color: white;  
+}  
+
+.navigation a:hover {  
+    text-decoration: underline;  
+}  
+
+/* Estilos para el encabezado del dashboard */  
+.header {  
+    grid-column: 2;  
+    background: #fff;  
+    padding: 20px;  
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  
+}  
+
+.header h1 {  
+    font-size: 24px;  
+}  
+
+/* Contenedor principal */  
+.main-container {  
+    padding: 20px;  
+    grid-column: 2;  
+}  
+
+/* Diseño de las tarjetas del dashboard */  
+.main-cards {  
+    display: flex;  
+    justify-content: space-between;  
+    flex-wrap: wrap;  
+    margin-bottom: 20px;  
+}  
+
+.card {  
+    background: #fff;  
+    padding: 20px;  
+    border-radius: 8px;  
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  
+    flex: 1 1 200px;  
+    margin: 10px;  
+    text-align: center;  
+}  
+
+/* Estilos para los formularios */  
+.form-container {  
+    max-width: 400px;  
+    margin: 40px auto;  
+    padding: 20px;  
+    background: #fff;  
+    border-radius: 8px;  
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  
+}  
+
+.form-container h1 {  
+    margin-bottom: 20px;  
+    font-size: 20px;  
+}  
+
+.form-container form {  
+    display: flex;  
+    flex-direction: column;  
+}  
+
+.form-container button {  
+    margin-top: 10px;
+}

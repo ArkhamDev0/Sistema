@@ -1,0 +1,17 @@
+{% extends 'dj/base.html' %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h2>Reagendar Cita</h2>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="nueva_fecha">Nueva fecha:</label>
+                <input type="date" name="nueva_fecha" id="nueva_fecha" class="form-control" value="{{ cita.fecha|date:'Y-m-d' }}">
+            </div>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a href="{% url 'listar_citas' %}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+{% endblock %}

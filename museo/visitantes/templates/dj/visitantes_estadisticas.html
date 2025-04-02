@@ -1,0 +1,135 @@
+{% extends 'dj/base.html' %}
+
+{% block title %}Estadísticas de Visitantes{% endblock %}
+
+{% block header_title %}Estadísticas de Visitantes{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3 class="text-center mb-4">Estadísticas de Visitantes</h3>
+
+    <form method="get" class="mb-4">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="fecha">Fecha:</label>
+                <input type="date" name="fecha" id="fecha" class="form-control" value="{% if not data %}{{ fecha }}{% endif %}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="mes">Mes:</label>
+                <select name="mes" id="mes" class="form-control">
+                    <option value="">Seleccionar mes</option>
+                    {% for num, nombre in meses.items %}
+                    <option value="{{ num }}" {% if mes == num|stringformat:"i" %}selected{% endif %}>{{ nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="anio">Año:</label>
+                <input type="number" name="anio" id="anio" class="form-control" value="{% if not data %}{{ anio }}{% endif %}">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="edad">Edad:</label>
+                <input type="number" name="edad" id="edad" class="form-control" value="{% if not data %}{{ edad }}{% endif %}">
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="empresa">Empresa:</label>
+                <select name="empresa" id="empresa" class="form-control">
+                    <option value="">Todos</option>
+                    <option value="si" {% if empresa == 'si' %}selected{% endif %}>Sí</option>
+                    <option value="no" {% if empresa == 'no' %}selected{% endif %}>No</option>
+                </select>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="es_extranjero">Extranjero:</label>
+                <select name="es_extranjero" id="es_extranjero" class="form-control">
+                    <option value="">Todos</option>
+                    <option value="si" {% if es_extranjero == 'si' %}selected{% endif %}>Sí</option>
+                    <option value="no" {% if es_extranjero == 'no' %}selected{% endif %}>No</option>
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Filtrar</button>
+    </form>
+
+    {% if mensaje %}
+    <div class="alert {% if data %}alert-success{% else %}alert-info{% endif %}">
+        {{ mensaje }}
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card p-3 mb-3">
+                <h5 class="fw-bold">Visitantes</h5>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Documento</th>
+                            <th>Fecha</th>
+                            <th>Edad</th>
+                            <th>Empresa</th>
+                            {% if data and data.0.visitas_count %}
+                                <th>Cantidad de Visitas</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in data %}
+                        <tr>
+                            <td>{{ item.nombre }}</td>
+                            <td>{{ item.apellido }}</td>
+                            <td>{{ item.documento }}</td>
+                            <td>{{ item.fecha }}</td>
+                            <td>{{ item.edad }}</td>
+                            <td>{{ item.empresa }}</td>
+                            {% if item.visitas_count %}
+                                <td>{{ item.visitas_count }}</td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page=1">&laquo;</a></li>
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">‹</a></li>
+                        {% endif %}
+                        <li class="page-item"><span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span></li>
+                        {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">›</a></li>
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">»</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-3 mb-3">
+                <h5 class="fw-bold">Visitantes por Documento</h5>
+                <ul class="list-group">
+                    <li class="list-group-item">Venezolanos: {{ venezolanos_count }}</li>
+                    <li class="list-group-item">Extranjeros: {{ extranjeros_count }}</li>
+                    <li class="list-group-item">Total: {{ total_visitantes }}</li>
+                </ul>
+            </div>
+
+            <div class="card p-3 mb-3">
+                <h5 class="fw-bold">Visitantes por Empresa</h5>
+                <ul class="list-group">
+                    {% for empresa in empresas_estadisticas %}
+                        <li class="list-group-item">{{ empresa.visitante__nombre_empresa }}: {{ empresa.total_visitantes }}</li>
+                    {% empty %}
+                        <li class="list-group-item">No hay datos de empresas.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

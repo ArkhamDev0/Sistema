@@ -1,0 +1,126 @@
+:root {
+    --primary-color: rgb(216, 180, 94);
+    --hover-color: #caa034;
+}
+
+/* Base styles */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    line-height: 1.6;
+}
+
+/* Tablas responsive */
+.table-container {
+    overflow-x: auto;  /* Permite scroll horizontal en mobile */
+    -webkit-overflow-scrolling: touch;
+}
+
+table {
+    min-width: 600px;  /* Ancho mínimo para tablas complejas */
+    width: 100%;
+}
+
+th, td {
+    padding: 0.75rem;  /* Unidades relativas */
+    white-space: nowrap;  /* Evita saltos de línea no deseados */
+}
+
+/* Contenido principal mejorado */
+.main-content {
+    padding: 1rem;
+}
+
+.content {
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .navbar-nav {
+        padding-top: 1rem;
+    }
+    
+    .main-content {
+        margin-top: 1rem !important;
+        padding: 0.5rem;
+    }
+    
+    th, td {
+        padding: 0.5rem;
+        font-size: 0.875rem;
+    }
+}
+
+@media (max-width: 576px) {
+    body {
+        font-size: 0.9rem;
+    }
+    
+    .btn-agendar {
+        width: 100%;  /* Botones full width en mobile */
+        margin-top: 0.5rem;
+    }
+    
+    .table-container {
+        margin-left: -1rem;
+        margin-right: -1rem;
+    }
+}
+
+/* Botones de navegación */
+.nav-link {
+    transition: all 0.3s ease;
+    border-radius: 0.5rem;
+    position: relative;
+}
+
+.nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.nav-link i {
+    font-size: 1.2rem;
+    min-width: 24px;
+}
+
+/* Versión mobile del menú */
+@media (max-width: 991px) {
+    #mainNav .navbar-nav {
+        background-color: rgba(216, 180, 94, 0.95);
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-top: 1rem;
+    }
+    
+    .nav-item .nav-link {
+        justify-content: center;
+    }
+    
+    .nav-item .nav-link span {
+        display: inline-block !important;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .nav-link i {
+        font-size: 1.4rem;
+        margin-right: 0 !important;
+    }
+    
+    .nav-link span {
+        display: none;
+    }
+    
+    .navbar-brand {
+        font-size: 1rem;
+    }
+}

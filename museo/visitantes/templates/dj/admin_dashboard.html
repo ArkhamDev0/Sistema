@@ -1,0 +1,42 @@
+<!-- visitantes/templates/dj/admin_dashboard.html -->  
+{% extends 'dj/base.html' %}  
+
+{% block title %}Panel de Administración{% endblock %}  
+
+{% block content %}  
+<div class="container mt-5">  
+    <h1>Panel de Administración</h1>  
+
+    {% if request.user.is_admin %}  <!-- Verifica si el usuario es administrador -->  
+    <div class="mb-3">  
+        <a href="{% url 'crear_usuario' %}" class="btn btn-primary">Crear Usuario</a>  
+    </div>  
+    {% endif %}  
+
+    <h2>Gestión de Usuarios</h2>  
+    <table class="table table-bordered">  
+        <thead>  
+            <tr>  
+                <th>Nombre de Usuario</th>  
+                <th>Es Administrador</th>  
+                <th>Acciones</th>  
+            </tr>  
+        </thead>  
+        <tbody>  
+            {% for user in users %}  
+                <tr>  
+                    <td>{{ user.username }}</td>  
+                    <td>{{ user.is_admin|yesno:"Sí,no" }}</td>  
+                    <td>  
+                        <a href="{% url 'editar_usuario' user.id %}" class="btn btn-warning">Editar</a>  
+                    </td>  
+                </tr>  
+            {% empty %}  
+                <tr>  
+                    <td colspan="3">No hay usuarios registrados.</td>  
+                </tr>  
+            {% endfor %}  
+        </tbody>  
+    </table>  
+</div>  
+{% endblock %}  

@@ -1,0 +1,39 @@
+<!DOCTYPE html>  
+<html lang="es">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    {% load static %}  
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">  
+    <title>Iniciar Sesión</title>  
+</head>  
+<body style="background-image: url('{% static 'images/background.jpg' %}'); background-size: cover; background-position: center;">  
+    <div class="login-container">  
+        <form method="POST">  
+            {% csrf_token %}  
+            <h2>Sistema Museos</h2>  
+
+            <!-- Mensaje de error, si existe -->  
+            {% if messages %}  
+                <div class="error-messages">  
+                    {% for message in messages %}  
+                        <p class="error">{{ message }}</p>  
+                    {% endfor %}  
+                </div>  
+            {% endif %}  
+
+            <!-- Campo para nombre de usuario -->  
+            <input type="text" name="username" placeholder="Nombre de usuario" required>  
+            <input type="password" name="password" placeholder="Contraseña" required>  
+            
+            <!-- Eliminar checkbox "Recordarme" -->  
+            <!-- <label class="remember-me">  
+                <input type="checkbox" name="remember" id="remember">   
+                Recordarme  
+            </label> -->  
+            
+            <button type="submit">Ingresar</button>  
+        </form>  
+    </div>  
+</body>  
+</html>  
